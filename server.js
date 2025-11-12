@@ -3,8 +3,8 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import db from "./src/config/db";
-import User from "./src/modules/users/user.model";
+import db from "./src/config/db.js";
+// import User from "./src/modules/users/user.model";
 
 const app = express();
 
@@ -26,6 +26,7 @@ app.get("/", (req, res) => {
   });
 
 
+// routes
 
 
   //404 route path
@@ -47,3 +48,6 @@ app.get("/", (req, res) => {
     app.listen(PORT, `0.0.0.0`, () => console.log(`server is running:  http://localhost:${PORT}`));  
    })
     .catch(err => console.error("Sync failed:", err));
+
+
+
