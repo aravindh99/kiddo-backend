@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
   });
   
 
-  db.sync()
+  db.sync({alter: true})
   .then(() => {
     console.log("Tables synced")
     app.listen(PORT, `0.0.0.0`, () => console.log(`server is running:  http://localhost:${PORT}`));  
