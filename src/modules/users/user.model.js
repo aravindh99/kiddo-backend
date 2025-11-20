@@ -8,25 +8,6 @@ import Schools from "../schools/school.model.js";
 const Users = db.define("User", {
 
     id: {
-
-<<<<<<< HEAD
-         type: DataTypes.UUID,
-         defaultValue: DataTypes.UUIDV4, 
-         primaryKey: true 
-        },
-
-    username:    { 
-        type: DataTypes.STRING,
-        unique: true, 
-        allowNull: false 
-    },
-
-    password: { 
-        type: DataTypes.STRING, 
-        allowNull: false
-    }
-  })
-=======
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
@@ -77,7 +58,7 @@ const Users = db.define("User", {
         allowNull: true
     },
 });
->>>>>>> 8efd8ec2ee1331b59b560030fc5c39ee32fb7efd
+
 
 Users.belongsTo(Roles, { foreignkey: "role_id", targetKey: "id", as: "roles" });
 Users.belongsTo(Schools, { foreignkey: "school_id", targetKey: "id", as: "schools" });

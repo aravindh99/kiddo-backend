@@ -8,7 +8,6 @@ config();
 const db = new Sequelize(process.env.DB_URI)
 
 
-
 try {
     await db.authenticate();
     console.log('Connection has been established successfully.');
