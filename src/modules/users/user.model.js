@@ -1,6 +1,16 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
 import Schools from "../schools/school.model.js";
+import Student from "../students/student.model.js";
+import Teacher from "../teachers/teacher.model.js";
+import Parent from "../parents/parent.model.js";
+import AiChatLog from "../ai-chat-logs/ai-chat-log.model.js";
+import ragQueries from "../rag-queries/rag-query.model.js";
+import VoiceLog from "../voice-logs/voice-log.model.js";
+import Subscription from "../subscriptions/subscription.model.js";
+import TokenAccount from "../tokens/token.model.js";
+import TokenTransaction from "../tokens/token-transaction.model.js";
+import Parent from "../parents/parent.model.js";
 
 const User = db.define(
   "user",
@@ -81,3 +91,15 @@ const User = db.define(
 User.belongsTo(Schools, { foreignKey: "school_id", as: "school" });
 
 export default User;
+
+// hasMany associations
+User.hasMany(Student, { foreignKey: "user_id", as: "studentProfile" });
+User.hasMany(Teacher, { foreignKey: "user_id", as: "teacherProfile" });
+User.hasMany(Parent, { foreignKey: "user_id", as: "parentProfile" });
+User.hasMany(AiChatLog, { foreignKey: "user_id", as: "aiChatLogs" });
+User.hasMany(ragQueries, { foreignKey: "user_id", as: "ragQueries" });
+User.hasMany(VoiceLog, { foreignKey: "user_id", as: "voiceLogs" });
+User.hasMany(Subscription, { foreignKey: "user_id", as: "subscriptions" });
+User.hasMany(TokenAccount, { foreignKey: "user_id", as: "tokenAccount" });
+User.hasMany(TokenTransaction, { foreignKey: "user_id", as: "tokenTransactions" });
+User.hasMany(Parent, { foreignKey: "user_id", as: "parentProfiles" });

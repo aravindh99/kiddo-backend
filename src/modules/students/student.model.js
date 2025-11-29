@@ -3,6 +3,9 @@ import db from "../../config/db.js";
 import User from "../users/user.model.js";
 import School from "../schools/school.model.js";
 import Class from "../classes/classes.model.js";
+import Attendance from "../attendance/attenadance.model.js";
+import ReportCard from "../report-cards/report-card.model.js";
+import Parent from "../parents/parent.model.js";
 
 const Student = db.define(
   "student",
@@ -98,3 +101,8 @@ Student.belongsTo(School, { foreignKey: "school_id", as: "school" });
 Student.belongsTo(Class, { foreignKey: "class_id", as: "class" });
 
 export default Student;
+
+// hasMany associations
+Student.hasMany(Attendance, { foreignKey: "student_id", as: "attendances" });
+Student.hasMany(ReportCard, { foreignKey: "student_id", as: "reportCards" });
+Student.hasMany(Parent, { foreignKey: "student_id", as: "parents" });

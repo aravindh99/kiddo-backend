@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
 import Users from "../users/user.model.js";
+import TokenTransaction from "../tokens/token-transaction.model.js";
 
 const Subscription = db.define("subscription", {
   id: {
@@ -58,5 +59,7 @@ const Subscription = db.define("subscription", {
 });
 
 Subscription.belongsTo(Users, { foreignKey: "user_id", as: "user" });
+
+Subscription.hasMany(TokenTransaction, { foreignKey: "subscription_id", as: "tokenTransactions" });
 
 export default Subscription;

@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
 import School from "../schools/school.model.js";
+import Timetable from "../timetables/timetable.model.js";
 
 const Subject = db.define(
   "subject",
@@ -36,3 +37,6 @@ const Subject = db.define(
 );
 
 export default Subject;
+
+// hasMany associations
+Subject.hasMany(Timetable, { foreignKey: "subject_id", as: "timetableSlots" });

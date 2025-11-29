@@ -1,5 +1,11 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
+import User from "../users/user.model.js";
+import Class from "../classes/classes.model.js";
+import Teacher from "../teachers/teacher.model.js";
+import Student from "../students/student.model.js";
+import Subject from "../subjects/subject.model.js";
+import Assignment from "../assignments/assignment.model.js";
 
 const School = db.define(
   "school",
@@ -56,3 +62,11 @@ const School = db.define(
 );
 
 export default School;
+
+// hasMany associations
+School.hasMany(User, { foreignKey: "school_id", as: "users" });
+School.hasMany(Class, { foreignKey: "school_id", as: "classes" });
+School.hasMany(Teacher, { foreignKey: "school_id", as: "teachers" });
+School.hasMany(Student, { foreignKey: "school_id", as: "students" });
+School.hasMany(Subject, { foreignKey: "school_id", as: "subjects" });
+School.hasMany(Assignment, { foreignKey: "school_id", as: "assignments" });

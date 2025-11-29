@@ -2,6 +2,10 @@ import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
 import User from "../users/user.model.js";
 import School from "../schools/school.model.js";
+import Class from "../classes/classes.model.js";
+import Attendance from "../attendance/attenadance.model.js";
+import Assignment from "../assignments/assignment.model.js";
+import Timetable from "../timetables/timetable.model.js";
 
 const Teacher = db.define(
   "teacher",
@@ -59,3 +63,9 @@ Teacher.belongsTo(User, { foreignKey: "user_id", as: "user" });
 Teacher.belongsTo(School, { foreignKey: "school_id", as: "school" });
 
 export default Teacher;
+
+// hasMany associations
+Teacher.hasMany(Class, { foreignKey: "class_teacher_id", as: "taughtClasses" });
+Teacher.hasMany(Attendance, { foreignKey: "marked_by", as: "markedAttendances" });
+Teacher.hasMany(Assignment, { foreignKey: "teacher_id", as: "assignments" });
+Teacher.hasMany(Timetable, { foreignKey: "teacher_id", as: "timetableSlots" });
