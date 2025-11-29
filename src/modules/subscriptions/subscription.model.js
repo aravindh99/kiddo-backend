@@ -12,7 +12,7 @@ const Subscription = db.define("subscription", {
   user_id: {
     type: DataTypes.UUID,
     allowNull: false,
-    references: { model: "users", key: "id" }
+    references: { model: Users, key: "id" }
   },
 
   // Stripe identifiers
@@ -49,9 +49,10 @@ const Subscription = db.define("subscription", {
   plan_tokens: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 }, 
 
 }, {
+  underscored: true,
   indexes: [
     { fields: ["user_id"] },
-    { fields: ["stripe_subscription_id"] },
+    { unique: true, fields: ["stripe_subscription_id"] },
     { fields: ["stripe_customer_id"] }
   ]
 });

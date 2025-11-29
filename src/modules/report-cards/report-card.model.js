@@ -51,6 +51,11 @@ const ReportCard = db.define(
   {
     tableName: "report_card",
     underscored: true,
+    indexes: [
+      { fields: ["student_id"] },
+      { fields: ["class_id"] },
+      { fields: ["year", "term"] }
+    ]
   }
 );
 

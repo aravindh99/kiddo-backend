@@ -52,6 +52,9 @@ const Attendance = db.define(
         unique: true,
         fields: ["student_id", "date"],
       },
+      { fields: ["class_id"] },
+      { fields: ["marked_by"] },
+      { fields: ["date"] }
     ],
   }
 );

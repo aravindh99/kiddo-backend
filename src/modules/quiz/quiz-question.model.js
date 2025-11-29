@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
 import Quiz from "./quiz.model.js";
 
-const QuizQuestion = db.define("QuizQuestion", {
+const QuizQuestion = db.define("quiz_question", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -13,7 +13,7 @@ const QuizQuestion = db.define("QuizQuestion", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "Quizzes", 
+      model: Quiz, 
       key: "id",
     },
   },
@@ -33,6 +33,12 @@ const QuizQuestion = db.define("QuizQuestion", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+}, {
+  tableName: "quiz_question",
+  underscored: true,
+  indexes: [
+    { unique: true, fields: ["quiz_id", "index"] }
+  ]
 });
 
 

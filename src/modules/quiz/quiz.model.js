@@ -3,7 +3,7 @@ import db from "../../config/db.js";
 import Users from "../users/user.model.js";
 
 const Quiz = db.define(
-  "Quiz",
+  "quiz",
   {
     id: {
       type: DataTypes.UUID,
@@ -14,7 +14,7 @@ const Quiz = db.define(
       type: DataTypes.UUID,
       allowNull: true,
       references: {
-        model: "Users", 
+        model: Users, 
         key: "id",
       },
     },
@@ -35,7 +35,13 @@ const Quiz = db.define(
       allowNull: false,
     },
   },
-
+  {
+    tableName: "quiz",
+    underscored: true,
+    indexes: [
+      { fields: ["owner_user_id"] }
+    ]
+  }
 );
 
 // Associations

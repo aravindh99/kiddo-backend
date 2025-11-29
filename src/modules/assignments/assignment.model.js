@@ -53,6 +53,12 @@ const Assignment = db.define(
   {
     tableName: "assignment",
     underscored: true,
+    indexes: [
+      { fields: ["school_id"] },
+      { fields: ["class_id"] },
+      { fields: ["teacher_id"] },
+      { fields: ["due_date"] }
+    ]
   }
 );
 Assignment.belongsTo(School, {

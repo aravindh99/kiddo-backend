@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
 import Users from "../users/user.model.js";
 
-const parents = db.define("Parent", {
+const Parent = db.define("parent", {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -12,15 +12,21 @@ const parents = db.define("Parent", {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-            model: "users",
+            model: Users,
             key: "id"
         }
     },
  
+}, {
+    tableName: "parent",
+    underscored: true,
+    indexes: [
+        { unique: true, fields: ["user_id"] }
+    ]
 });
 
-parents.belongsTo(Users, { foreignKey: "user_id", targetKey: "id", as: "user" });
+Parent.belongsTo(Users, { foreignKey: "user_id", targetKey: "id", as: "user" });
 
 
-export default parents;
+export default Parent;
 

@@ -14,7 +14,7 @@ const TokenAccount = db.define("token_account", {
     type: DataTypes.UUID,
     allowNull: false,
     unique: true,
-    references: { model: "users", key: "id" }
+    references: { model: Users, key: "id" }
   },
 
  
@@ -29,8 +29,10 @@ const TokenAccount = db.define("token_account", {
 
   
 }, {
+  underscored: true,
   indexes: [
-    { fields: ["user_id"] }
+    { fields: ["user_id"] },
+    { fields: ["expires_at"] }
   ]
 });
 

@@ -4,7 +4,7 @@ import db from "../../config/db.js";
 import Quiz from "../quiz/quiz.model.js";
 import Users from "../users/user.model.js";
 
-const GameSession = db.define("GameSession", {
+const GameSession = db.define("game_session", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -14,7 +14,7 @@ const GameSession = db.define("GameSession", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "Quizzes",
+      model: Quiz,
       key: "id",
     },
   },
@@ -31,7 +31,7 @@ const GameSession = db.define("GameSession", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "Users",
+      model: Users,
       key: "id",
     },
   },
@@ -52,6 +52,15 @@ const GameSession = db.define("GameSession", {
     type: DataTypes.DATE,
     allowNull: true,
   },
+}, {
+  tableName: "game_session",
+  underscored: true,
+  indexes: [
+    { fields: ["quiz_id"] },
+    { fields: ["host_user_id"] },
+    { fields: ["status"] },
+    { fields: ["room_code"] }
+  ]
 });
 
 // Associations

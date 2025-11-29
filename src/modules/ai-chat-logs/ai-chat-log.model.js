@@ -32,6 +32,10 @@ const AiChatLog = db.define(
   {
     tableName: "ai_chat_log",
     underscored: true,
+    indexes: [
+      { fields: ["user_id"] },
+      { fields: ["created_at"] }
+    ]
   }
 );
 

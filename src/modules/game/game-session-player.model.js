@@ -4,7 +4,7 @@ import db from "../../config/db.js";
 import GameSession from "./game-session.model.js";
 import Users from "../users/user.model.js";
 
-const GameSessionPlayer = db.define("GameSessionPlayer", {
+const GameSessionPlayer = db.define("game_session_player", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -14,7 +14,7 @@ const GameSessionPlayer = db.define("GameSessionPlayer", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "GameSessions",
+      model: GameSession,
       key: "id",
     },
   },
@@ -22,7 +22,7 @@ const GameSessionPlayer = db.define("GameSessionPlayer", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "Users",
+      model: Users,
       key: "id",
     },
   },
@@ -56,6 +56,14 @@ const GameSessionPlayer = db.define("GameSessionPlayer", {
     type: DataTypes.DATE,
     allowNull: true,
   },
+}, {
+  tableName: "game_session_player",
+  underscored: true,
+  indexes: [
+    { fields: ["session_id"] },
+    { fields: ["user_id"] },
+    { fields: ["status"] }
+  ]
 });
 
 // Associations

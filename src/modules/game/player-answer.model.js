@@ -4,7 +4,7 @@ import db from "../../config/db.js";
 import GameSessionPlayer from "./game-session-player.model.js";
 import QuizQuestion from "../quiz/quiz-question.model.js";
 
-const PlayerAnswer = db.define("PlayerAnswer", {
+const PlayerAnswer = db.define("player_answer", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -14,7 +14,7 @@ const PlayerAnswer = db.define("PlayerAnswer", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "GameSessionPlayers",
+      model: GameSessionPlayer,
       key: "id",
     },
   },
@@ -22,7 +22,7 @@ const PlayerAnswer = db.define("PlayerAnswer", {
     type: DataTypes.UUID,
     allowNull: false,
     references: {
-      model: "QuizQuestions",
+      model: QuizQuestion,
       key: "id",
     },
   },
@@ -42,6 +42,14 @@ const PlayerAnswer = db.define("PlayerAnswer", {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+}, {
+  tableName: "player_answer",
+  underscored: true,
+  indexes: [
+    { fields: ["session_player_id"] },
+    { fields: ["question_id"] },
+    { fields: ["answered_at"] }
+  ]
 });
 
 // Associations

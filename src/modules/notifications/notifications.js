@@ -13,7 +13,7 @@ const Notifications = db.define("notification", {
     user_id: {
         type: DataTypes.UUID,
         references: {
-            model: "Users",
+            model: Users,
             key: "id"
         }
     },
@@ -32,12 +32,20 @@ const Notifications = db.define("notification", {
     },
     school_id: {
         type: DataTypes.UUID,
-        allowNull: true
+        allowNull: true,
+        references: {
+            model: Schools,
+            key: "id"
+        }
     },
 
     class_id: {
         type: DataTypes.UUID,
-        allowNull: true
+        allowNull: true,
+        references: {
+            model: Classes,
+            key: "id"
+        }
     },
 
     is_read: {
@@ -46,6 +54,8 @@ const Notifications = db.define("notification", {
         defaultValue: false
     }
 },{
+    tableName: "notification",
+    underscored: true,
     indexes: [
         { fields: ["user_id"] },
         { fields: ["class_id"] },
