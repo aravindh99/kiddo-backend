@@ -1,62 +1,66 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import Classes from "../classes/classes.model.js";
-import Sections from "../sections/section.model.js";
-import Teachers from "../teachers/teacher.model.js";
+import Class from "../classes/classes.model.js";
+import Teacher from "../teachers/teacher.model.js";
+import Subject from "../subjects/subject.model.js";
 
-const timetable = db.define("timetable", {
+const Timetable = db.define(
+  "timetable_slot",
+  {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
     },
-    class_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: "classes",
-            key: "id"
-        }
-    },
-    section_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: "sections",
-            key: "id"
-        }
-    },
-    day_of_week: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    period: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    subject: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    teacher_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: "teachers",
-            key: "id"
-        }
-    },
-    start_time: {
-        type: DataTypes.TIME,
-        allowNull: false
-    },
-    end_time: {
-        type: DataTypes.TIME,
-        allowNull: false
-    },
-});
 
-timetable.belongsTo(Classes, { foreignKey: "class_id", targetKey: "id", as: "class" });
-timetable.belongsTo(Sections, { foreignKey: "section_id", targetKey: "id", as: "section" });
-timetable.belongsTo(Teachers, { foreignKey: "teacher_id", targetKey: "id", as: "teacher" });
-export default timetable;
+    class_room_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: { model: Class, key: "id" },
+    },
+
+    day_of_week: {
+      type: DataTypes.ENUM("Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+      allowNull: false,
+    },
+
+    period_no: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+
+    subject_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: { model: Subject, key: "id" },
+    },
+
+    teacher_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: { model: Teacher, key: "id" },
+    },
+
+    start_time: { type: DataTypes.TIME, allowNull: true },
+    end_time: { type: DataTypes.TIME, allowNull: true },
+  },
+  {
+    tableName: "timetable_slot",
+    timestamps: true,
+    underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ["class_room_id", "day_of_week", "period_no"],
+      },
+      { fields: ["teacher_id"] },
+      { fields: ["subject_id"] },
+    ],
+  }
+);
+
+Timetable.belongsTo(Class, { foreignKey: "class_room_id", as: "class" });
+Timetable.belongsTo(Teacher, { foreignKey: "teacher_id", as: "teacher" });
+Timetable.belongsTo(Subject, { foreignKey: "subject_id", as: "subject" });
+
+export default Timetable;

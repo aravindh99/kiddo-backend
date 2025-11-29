@@ -1,66 +1,83 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import Roles from "../roles/role.model.js";
 import Schools from "../schools/school.model.js";
 
-
-
-const Users = db.define("User", {
-
+const User = db.define(
+  "user",
+  {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
     },
 
+    // null for super_admin
     school_id: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-            model: "schools",
-            key: "id"
-        }
+      type: DataTypes.UUID,
+      references: { model: Schools, key: "id" },
     },
-    role_id: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-            model: "roles",
-            key: "id"
-        }
+
+    // fixed roles, clean & strict
+    role: {
+      type: DataTypes.ENUM(
+        "super_admin",
+        "school_admin",
+        "teacher",
+        "student",
+        "parent"
+      ),
+      allowNull: false,
     },
+
     email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+      type: DataTypes.STRING,
     },
-    phone_no: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        unique: true
+
+    phone: {
+      type: DataTypes.STRING,
     },
+
+    password: {
+      type: DataTypes.STRING(100),
+    },
+
+    first_login: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+
     name: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
+
     is_active: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
+
     last_login: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
+      type: DataTypes.DATE,
     },
-    image_url: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-});
+  },
+  {
+    tableName: "user",
+    underscored: true,
+    indexes: [
+      { fields: ["school_id"] },
+      { fields: ["role"] },
+      { fields: ["phone"] },
+      { unique: true, fields: ["school_id", "username"] },
+    ],
+  }
+);
 
+// associations
+User.belongsTo(Schools, { foreignKey: "school_id", as: "school" });
 
-Users.belongsTo(Roles, { foreignkey: "role_id", targetKey: "id", as: "roles" });
-Users.belongsTo(Schools, { foreignkey: "school_id", targetKey: "id", as: "schools" });
-
-export default Users;
+export default User;

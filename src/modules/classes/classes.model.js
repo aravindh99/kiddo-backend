@@ -1,30 +1,66 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import schools from "../schools/school.model.js";
+import School from "../schools/school.model.js";
+import Teachers from "../teachers/teacher.model.js";
 
-const classes = db.define("class", {
+const Class = db.define(
+  "class",
+  {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
-    },
-    class_id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
     school_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: "schools",
-            key: "id"
-        }
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: School,
+        key: "id",
+      },
     },
-    grade: {
-        type: DataTypes.STRING,
-        allowNull: false
+    class_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
+
+    section_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    capacity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    class_teacher_id: {
+      type: DataTypes.UUID,
+      references: {
+        model: Teachers,
+        key: "id",
+      },
+    },
+  },
+  {
+    tableName: "class",
+    underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ["school_id", "class_name", "section_name"],
+      },
+    ],
+  }
+);
+Class.belongsTo(School, {
+  foreignKey: "school_id",
+  targetKey: "id",
+  as: "school",
 });
-classes.belongsTo(schools, { foreignKey: "school_id", targetKey: "id", as: "school" });
-export default classes;
+Class.belongsTo(Teachers, {
+  foreignKey: "class_teacher_id",
+  targetKey: "id",
+  as: "class_teacher",
+});
+
+export default Class;

@@ -1,21 +1,38 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
+import School from "../schools/school.model.js";
 
-const subjects = db.define("subject", {
+const Subject = db.define(
+  "subject",
+  {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
-    subject_id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+    school_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: School,
+        key: "id",
+      },
     },
-    type: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: false
+    name: { type: DataTypes.STRING, allowNull: false },
+    code: { type: DataTypes.STRING, allowNull: true },
+    category: {
+      type: DataTypes.ENUM("theory", "practical", "both"),
+      defaultValue: "theory",
     },
-});
+  },
+  {
+    tableName: "subject",
+    underscored: true,
+    indexes: [
+      { fields: ["school_id"] },
+      { unique: true, fields: ["school_id", "name"] },
+    ],
+  }
+);
 
-export default subjects;
+export default Subject;

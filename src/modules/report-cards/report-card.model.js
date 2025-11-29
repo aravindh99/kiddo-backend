@@ -1,22 +1,21 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
+import Student from "../students/student.model.js";
 import Class from "../classes/classes.model.js";
-import School from "../schools/school.model.js";
-import Teacher from "../teachers/teacher.model.js";
 
-const Assignment = db.define(
-  "assignment",
+const ReportCard = db.define(
+  "report_card",
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    school_id: {
+    student_id: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: School,
+        model: Student,
         key: "id",
       },
     },
@@ -28,46 +27,42 @@ const Assignment = db.define(
         key: "id",
       },
     },
-
-    teacher_id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-        model: Teacher,
-        key: "id",
-      },
-    },
-    title: {
+    term: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    description: {
-      type: DataTypes.TEXT,
+    year: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
-
-    due_date: {
-      type: DataTypes.DATE,
+    grades: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+    },
+    gpa: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+    },
+    remarks: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
-    tableName: "assignment",
+    tableName: "report_card",
     underscored: true,
   }
 );
-Assignment.belongsTo(School, {
-  foreignKey: "school_id",
-  targetKey: "id",
-  as: "school",
-});
-Assignment.belongsTo(Class, {
+
+ReportCard.belongsTo(Class, {
   foreignKey: "class_id",
   targetKey: "id",
   as: "class",
 });
-Assignment.belongsTo(Teacher, {
-  foreignKey: "teacher_id",
+ReportCard.belongsTo(Student, {
+  foreignKey: "student_id",
   targetKey: "id",
-  as: "teacher",
+  as: "student",
 });
-export default Assignment;
+
+export default ReportCard;

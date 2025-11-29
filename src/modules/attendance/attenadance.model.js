@@ -1,64 +1,73 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import Users from "../users/user.model.js";
-import Students from "../students/student.model.js";
-import Classes from "../classes/classes.model.js";
-import Sections from "../sections/section.model.js";
+import Student from "../students/student.model.js";
+import Teacher from "../teachers/teacher.model.js";
+import Class from "../classes/classes.model.js";
 
-const attendance = db.define("attendance", {
+const Attendance = db.define(
+  "attendance",
+  {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
     student_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: "students",
-            key: "id"
-        }
-    },
-    class_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: "classes",
-            key: "id"
-        }
-    },
-    section_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: "sections",
-            key: "id"
-        }
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: Student,
+        key: "id",
+      },
     },
     date: {
-        type: DataTypes.DATE,
-        allowNull: false
+      type: DataTypes.DATEONLY,
+      allowNull: false,
     },
     status: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     marked_by: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: "users",
-            key: "id"
-        }
+      type: DataTypes.UUID,
+      references: {
+        model: Teacher,
+        key: "id",
+      },
     },
-    marked_at: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW
-    }
+    class_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: Class,
+        key: "id",
+      },
+    },
+  },
+  {
+    tableName: "attendance",
+    underscored: true,
+    indexes: [
+      {
+        unique: true,
+        fields: ["student_id", "date"],
+      },
+    ],
+  }
+);
+Attendance.belongsTo(Student, {
+  foreignKey: "student_id",
+  targetKey: "id",
+  as: "student",
 });
-attendance.belongsTo(Students, { foreignKey: "student_id", targetKey: "id", as: "student" });
-attendance.belongsTo(Classes, { foreignKey: "class_id", targetKey: "id", as: "class" });
-attendance.belongsTo(Sections, { foreignKey: "section_id", targetKey: "id", as: "section" });
-attendance.belongsTo(Users, { foreignKey: "marked_by", targetKey: "id", as: "user" });
-export default attendance;
+Attendance.belongsTo(Teacher, {
+  foreignKey: "marked_by",
+  targetKey: "id",
+  as: "marked_by_teacher",
+});
+Attendance.belongsTo(Class, {
+  foreignKey: "class_id",
+  targetKey: "id",
+  as: "class",
+});
+export default Attendance;

@@ -1,54 +1,58 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
 
-const schools = db.define("school", {
+const School = db.define(
+  "school",
+  {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
-    school_id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+    school_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
+    school_code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
     cbse_affiliation_no: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     address: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
     city: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     state: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    country: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     zip: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    phone_no: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    contact_phone: {
+      type: DataTypes.STRING,
     },
-    email_id: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+    logo_url: {
+      type: DataTypes.TEXT,
     },
-});
+    status: {
+      type: DataTypes.ENUM("active", "inactive"),
+      defaultValue: "active",
+    },
+  },
+  {
+    tableName: "school",
+    underscored: true,
+  }
+);
 
-export default schools;
+export default School;

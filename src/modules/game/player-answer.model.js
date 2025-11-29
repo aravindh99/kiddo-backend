@@ -1,0 +1,66 @@
+
+import { DataTypes } from "sequelize";
+import db from "../../config/db.js";
+import GameSessionPlayer from "./game-session-player.model.js";
+import QuizQuestion from "../quiz/quiz-question.model.js";
+
+const PlayerAnswer = db.define("PlayerAnswer", {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  session_player_id: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: "GameSessionPlayers",
+      key: "id",
+    },
+  },
+  question_id: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: "QuizQuestions",
+      key: "id",
+    },
+  },
+  selected_option_index: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  is_correct: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+  time_taken_ms: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  answered_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+});
+
+// Associations
+GameSessionPlayer.hasMany(PlayerAnswer, {
+  foreignKey: "session_player_id",
+  as: "answers",
+});
+PlayerAnswer.belongsTo(GameSessionPlayer, {
+  foreignKey: "session_player_id",
+  as: "sessionPlayer",
+});
+
+QuizQuestion.hasMany(PlayerAnswer, {
+  foreignKey: "question_id",
+  as: "answers",
+});
+PlayerAnswer.belongsTo(QuizQuestion, {
+  foreignKey: "question_id",
+  as: "question",
+});
+
+export default PlayerAnswer;
