@@ -28,6 +28,11 @@ const Assignment = db.define(
         key: "id",
       },
     },
+    status:{
+      type: DataTypes.ENUM("DRAFT", "PUBLISHED", "CLOSED"),
+      defaultValue: "DRAFT",
+      allowNull: false,
+    },
 
     teacher_id: {
       type: DataTypes.UUID,

@@ -50,7 +50,7 @@ const Attendance = db.define(
     indexes: [
       {
         unique: true,
-        fields: ["student_id", "date"],
+        fields: ["student_id","class_id", "date"],
       },
       { fields: ["class_id"] },
       { fields: ["marked_by"] },

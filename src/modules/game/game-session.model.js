@@ -39,6 +39,10 @@ const GameSession = db.define("game_session", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  total_time_ms: {
+  type: DataTypes.INTEGER,
+  allowNull: false,
+},
   status: {
     type: DataTypes.ENUM("LOBBY", "IN_PROGRESS", "FINISHED", "CANCELLED"),
     allowNull: false,

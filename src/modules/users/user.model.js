@@ -10,7 +10,7 @@ import VoiceLog from "../voice-logs/voice-log.model.js";
 import Subscription from "../subscriptions/subscription.model.js";
 import TokenAccount from "../tokens/token.model.js";
 import TokenTransaction from "../tokens/token-transaction.model.js";
-import Parent from "../parents/parent.model.js";
+
 
 const User = db.define(
   "user",
@@ -102,4 +102,4 @@ User.hasMany(VoiceLog, { foreignKey: "user_id", as: "voiceLogs" });
 User.hasMany(Subscription, { foreignKey: "user_id", as: "subscriptions" });
 User.hasMany(TokenAccount, { foreignKey: "user_id", as: "tokenAccount" });
 User.hasMany(TokenTransaction, { foreignKey: "user_id", as: "tokenTransactions" });
-User.hasMany(Parent, { foreignKey: "user_id", as: "parentProfiles" });
+

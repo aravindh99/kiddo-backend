@@ -34,6 +34,11 @@ const GameSessionPlayer = db.define("game_session_player", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  current_question_index: {
+  type: DataTypes.INTEGER,
+  allowNull: false,
+  defaultValue: 0,
+},
   status: {
     type: DataTypes.ENUM(
       "JOINED",
@@ -56,6 +61,11 @@ const GameSessionPlayer = db.define("game_session_player", {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  finished_at: {
+  type: DataTypes.DATE,
+  allowNull: true,
+},
+
 }, {
   tableName: "game_session_player",
   underscored: true,

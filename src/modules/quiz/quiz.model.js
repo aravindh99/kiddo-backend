@@ -27,7 +27,7 @@ const Quiz = db.define(
       allowNull: false,
     },
     difficulty: {
-      type: DataTypes.ENUM("EASY", "HARD"),
+      type: DataTypes.ENUM("EASY", "MEDIUM", "HARD", "ADAPTIVE"),
       allowNull: false,
     },
     num_questions: {
