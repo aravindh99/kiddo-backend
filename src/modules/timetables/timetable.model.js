@@ -1,22 +1,20 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import Class from "../classes/classes.model.js";
-import Teacher from "../teachers/teacher.model.js";
-import Subject from "../subjects/subject.model.js";
+// imports removed
 
 const Timetable = db.define(
   "timetable_slot",
   {
     id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
+      autoIncrement: true,
     },
 
-    class_room_id: {
-      type: DataTypes.UUID,
+    class_id: {
+      type: DataTypes.BIGINT,
       allowNull: false,
-      references: { model: Class, key: "id" },
+      references: { model: "classes", key: "id" },
     },
 
     day_of_week: {
@@ -30,37 +28,43 @@ const Timetable = db.define(
     },
 
     subject_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
-      references: { model: Subject, key: "id" },
+      references: { model: "subjects", key: "id" },
     },
 
     teacher_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
-      references: { model: Teacher, key: "id" },
+      references: { model: "teachers", key: "id" },
     },
 
-    start_time: { type: DataTypes.TIME, allowNull: true },
-    end_time: { type: DataTypes.TIME, allowNull: true },
+    start_time: {
+      type: DataTypes.TIME,
+      allowNull: true,
+    },
+
+    end_time: {
+      type: DataTypes.TIME,
+      allowNull: true,
+    },
   },
   {
-    tableName: "timetable_slot",
-    timestamps: true,
+    tableName: "timetable_slots",
     underscored: true,
     indexes: [
       {
         unique: true,
-        fields: ["class_room_id", "day_of_week", "period_no"],
+        fields: ["class_id", "day_of_week", "period_no"],
+      },
+      {
+        unique: true,
+        fields: ["teacher_id", "day_of_week", "period_no"],
       },
       { fields: ["teacher_id"] },
       { fields: ["subject_id"] },
     ],
   }
 );
-
-Timetable.belongsTo(Class, { foreignKey: "class_room_id", as: "class" });
-Timetable.belongsTo(Teacher, { foreignKey: "teacher_id", as: "teacher" });
-Timetable.belongsTo(Subject, { foreignKey: "subject_id", as: "subject" });
 
 export default Timetable;

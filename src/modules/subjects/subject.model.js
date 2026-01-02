@@ -1,33 +1,43 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import School from "../schools/school.model.js";
-import Timetable from "../timetables/timetable.model.js";
+// imports removed
 
 const Subject = db.define(
   "subject",
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.BIGINT,
+      autoIncrement: true,
       primaryKey: true,
     },
+
     school_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: School,
+        model: "schools",
         key: "id",
       },
     },
-    name: { type: DataTypes.STRING, allowNull: false },
-    code: { type: DataTypes.STRING, allowNull: true },
+
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
+    code: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
     category: {
       type: DataTypes.ENUM("theory", "practical", "both"),
+      allowNull: false,
       defaultValue: "theory",
     },
   },
   {
-    tableName: "subject",
+    tableName: "subjects",
     underscored: true,
     indexes: [
       { fields: ["school_id"] },
@@ -37,6 +47,3 @@ const Subject = db.define(
 );
 
 export default Subject;
-
-// hasMany associations
-Subject.hasMany(Timetable, { foreignKey: "subject_id", as: "timetableSlots" });

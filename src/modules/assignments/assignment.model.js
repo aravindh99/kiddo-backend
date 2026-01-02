@@ -1,44 +1,42 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import Class from "../classes/classes.model.js";
-import School from "../schools/school.model.js";
-import Teacher from "../teachers/teacher.model.js";
+// imports removed
 
 const Assignment = db.define(
   "assignment",
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.BIGINT,
+      autoIncrement: true,
       primaryKey: true,
     },
     school_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: School,
+        model: "schools",
         key: "id",
       },
     },
     class_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: Class,
+        model: "classes",
         key: "id",
       },
     },
-    status:{
+    status: {
       type: DataTypes.ENUM("DRAFT", "PUBLISHED", "CLOSED"),
       defaultValue: "DRAFT",
       allowNull: false,
     },
 
     teacher_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: Teacher,
+        model: "teachers",
         key: "id",
       },
     },
@@ -56,7 +54,7 @@ const Assignment = db.define(
     },
   },
   {
-    tableName: "assignment",
+    tableName: "assignments",
     underscored: true,
     indexes: [
       { fields: ["school_id"] },
@@ -66,19 +64,4 @@ const Assignment = db.define(
     ]
   }
 );
-Assignment.belongsTo(School, {
-  foreignKey: "school_id",
-  targetKey: "id",
-  as: "school",
-});
-Assignment.belongsTo(Class, {
-  foreignKey: "class_id",
-  targetKey: "id",
-  as: "class",
-});
-Assignment.belongsTo(Teacher, {
-  foreignKey: "teacher_id",
-  targetKey: "id",
-  as: "teacher",
-});
 export default Assignment;

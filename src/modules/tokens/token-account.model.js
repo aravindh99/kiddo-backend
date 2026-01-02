@@ -2,42 +2,42 @@ import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
 // imports removed
 
-const AiChatLog = db.define(
-  "ai_chat_log",
+const TokenAccount = db.define(
+  "token_account",
   {
     id: {
       type: DataTypes.BIGINT,
-      autoIncrement: true,
       primaryKey: true,
+      autoIncrement: true,
     },
+
     user_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      references: {
-        model: "users",
-        key: "id",
-      },
+      unique: true,
+      references: { model: "users", key: "id" },
     },
-    message: {
-      type: DataTypes.TEXT,
-    },
-    response: {
-      type: DataTypes.TEXT,
-    },
-    token_cost: {
+
+    balance: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
+    },
+
+    expires_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
-    tableName: "ai_chat_logs",
+    tableName: "token_accounts",
     underscored: true,
     indexes: [
       { fields: ["user_id"] },
-      { fields: ["created_at"] }
-    ]
+      { fields: ["expires_at"] },
+    ],
   }
 );
 
-export default AiChatLog;
-
+// Associations
+export default TokenAccount;

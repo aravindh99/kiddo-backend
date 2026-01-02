@@ -2,8 +2,8 @@ import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
 // imports removed
 
-const ReportCard = db.define(
-  "report_card",
+const Attendance = db.define(
+  "attendance",
   {
     id: {
       type: DataTypes.BIGINT,
@@ -29,44 +29,38 @@ const ReportCard = db.define(
       },
     },
 
-    term: {
-      type: DataTypes.ENUM("TERM_1", "TERM_2", "TERM_3", "FINAL"),
+    date: {
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
 
-    year: {
-      type: DataTypes.INTEGER,
+    status: {
+      type: DataTypes.ENUM("present", "absent", "leave"),
       allowNull: false,
     },
 
-    grades: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-    },
-
-    gpa: {
-      type: DataTypes.DECIMAL(4, 2),
-      allowNull: false,
-    },
-
-    remarks: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    marked_by: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "teachers",
+        key: "id",
+      },
     },
   },
   {
-    tableName: "report_cards",
+    tableName: "attendances",
     underscored: true,
     indexes: [
-      { fields: ["student_id"] },
-      { fields: ["class_id"] },
-      { fields: ["year", "term"] },
       {
         unique: true,
-        fields: ["student_id", "class_id", "year", "term"],
+        fields: ["student_id", "class_id", "date"],
       },
+      { fields: ["class_id"] },
+      { fields: ["marked_by"] },
+      { fields: ["date"] },
     ],
   }
 );
 
-export default ReportCard;
+export default Attendance;

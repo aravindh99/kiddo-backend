@@ -3,27 +3,35 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
+dotenv.config();
 import db from "./src/config/db.js";
-// import User from "./src/modules/users/user.model";
+import errorHandler from "./src/shared/errorHandler.js";
+import "./src/models/initModels.js";
+
+
+
 
 const app = express();
 
-dotenv.config();
-
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+//common middlewares
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: false, // true only if cookies are used
+}));
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
 
 
-
-
-//health check route
-app.get("/", (req, res) => {
-    res.send(`server is running and healthy ;)`);
-  });
+//health check 
+app.get("/", (req, res) =>  res.json({message: `server is running ;)`}));
 
 
 // routes
@@ -31,23 +39,26 @@ app.get("/", (req, res) => {
 
 //404 route path
   app.use((req, res) => {
-    res.status(404).json({ error: "Route not found" });
+    res.status(404).json({ message: "Route not found" });
   });
 
 
 //error handling middleware
-  app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: err.message });
-  });
-  
+ app.use(errorHandler);
 
-  db.sync({alter: true})
-  .then(() => {
-    console.log("Tables synced")
-    app.listen(PORT, `0.0.0.0`, () => console.log(`server is running:  http://localhost:${PORT}`));  
-   })
-    .catch(err => console.error("Sync failed:", err));
+//server start
+try {
+  await db.authenticate();
+  console.log("DB connected");
 
+  await db.sync({force: true}); // sync
+
+  app.listen(PORT, "0.0.0.0", () =>
+    console.log(`http://localhost:${PORT}`)
+  );
+} catch (err) {
+  console.error("DB connection failed", err);
+  process.exit(1);
+}
 
 

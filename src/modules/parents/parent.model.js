@@ -1,43 +1,38 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import User from "../users/user.model.js";
-import Student from "../students/student.model.js";
+// imports removed
 
 const Parent = db.define(
   "parent",
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.BIGINT,
+      autoIncrement: true,
       primaryKey: true,
     },
     user_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: User,
+        model: "users",
         key: "id",
       },
     },
     student_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: Student,
+        model: "students",
         key: "id",
       },
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     relation_type: {
       type: DataTypes.ENUM("mother", "father", "guardian"),
-      allowNull: true,
+      allowNull: false,
     },
   },
   {
-    tableName: "parent",
+    tableName: "parents",
     underscored: true,
     indexes: [
       { fields: ["user_id"] },
@@ -49,8 +44,5 @@ const Parent = db.define(
     ],
   }
 );
-
-Parent.belongsTo(User, { foreignKey: "user_id", as: "user" });
-Parent.belongsTo(Student, { foreignKey: "student_id", as: "student" });
 
 export default Parent;

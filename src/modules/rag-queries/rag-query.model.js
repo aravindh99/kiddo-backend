@@ -1,40 +1,68 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import Users from "../users/user.model.js";
+// imports removed
 
-const ragQueries = db.define("rag_query", {
+const RagQuery = db.define(
+  "rag_query",
+  {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+      type: DataTypes.BIGINT,
+      autoIncrement: true,
+      primaryKey: true,
     },
+
     user_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: Users,
-            key: "id"
-        }
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: {
+        model: "users",
+        key: "id",
+      },
     },
+
+    purpose: {
+      type: DataTypes.ENUM(
+        "lesson_note",
+        "explanation",
+        "question",
+        "revision",
+        "general"
+      ),
+      allowNull: false,
+      defaultValue: "general",
+    },
+
     query_text: {
-        type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
-    pinecone_vector_id: {
-        type: DataTypes.STRING
+
+    vector_id: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
+
+    vector_store: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "pinecone",
+    },
+
     results: {
-        type: DataTypes.JSONB
+      type: DataTypes.JSONB,
+      allowNull: false,
     },
-}, {
-    tableName: "rag_query",
+  },
+  {
+    tableName: "rag_queries",
     underscored: true,
     indexes: [
-        { fields: ["user_id"] },
-        { fields: ["created_at"] }
-    ]
-});
+      { fields: ["user_id"] },
+      { fields: ["purpose"] },
+      { fields: ["created_at"] },
+    ],
+  }
+);
 
-ragQueries.belongsTo(Users, { foreignKey: "user_id", targetKey: "id", as: "user" });
-
-export default ragQueries;
-
+// Associations
+export default RagQuery;

@@ -1,76 +1,84 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import Users from "../users/user.model.js";
-import Schools from "../schools/school.model.js";
-import Classes from "../classes/classes.model.js";
+// imports removed
 
-const Notifications = db.define("notification", {
+const Notification = db.define(
+  "notification",
+  {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
+      type: DataTypes.BIGINT,
+      autoIncrement: true,
+      primaryKey: true,
     },
+
     user_id: {
-        type: DataTypes.UUID,
-        references: {
-            model: Users,
-            key: "id"
-        }
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: {
+        model: "users",
+        key: "id",
+      },
     },
-  
+
     type: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.ENUM(
+        "assignment",
+        "attendance",
+        "announcement",
+        "quiz",
+        "game",
+        "system"
+      ),
+      allowNull: false,
     },
+
     payload: {
-        type: DataTypes.JSONB,
-        allowNull: false
+      type: DataTypes.JSONB,
+      allowNull: false,
     },
+
     priority: {
-        type: DataTypes.ENUM("low", "high"),
-        defaultValue: "low"
+      type: DataTypes.ENUM("low", "high"),
+      allowNull: false,
+      defaultValue: "low",
     },
+
     school_id: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: Schools,
-            key: "id"
-        }
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "schools",
+        key: "id",
+      },
     },
 
     class_id: {
-        type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: Classes,
-            key: "id"
-        }
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "classes",
+        key: "id",
+      },
     },
 
     is_read: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-    }
-},{
-    tableName: "notification",
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+  },
+  {
+    tableName: "notifications",
     underscored: true,
     indexes: [
-        { fields: ["user_id"] },
-        { fields: ["class_id"] },
-        { fields: ["school_id"] },
-        { fields: ["user_id", "is_read"] }
-      ]
-});
+      { fields: ["user_id"] },
+      { fields: ["user_id", "is_read"] },
+      { fields: ["class_id"] },
+      { fields: ["school_id"] },
+      { fields: ["created_at"] },
+    ],
+  }
+);
 
-Notifications.belongsTo(Users, { foreignKey: "user_id", targetKey: "id", as: "user" });
-Users.hasMany(Notifications, { foreignKey: "user_id", as: "notifications" });
-
-Notifications.belongsTo(Schools, { foreignKey: "school_id", targetKey: "id", as: "school" });
-Schools.hasMany(Notifications, { foreignKey: "school_id", as: "schoolNotifications" });
-
-Notifications.belongsTo(Classes, { foreignKey: "class_id", targetKey: "id", as: "class" });
-Classes.hasMany(Notifications, { foreignKey: "class_id", as: "classNotifications" });
-
-export default Notifications;
+// Associations
+export default Notification;

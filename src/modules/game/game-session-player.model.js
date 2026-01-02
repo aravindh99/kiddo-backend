@@ -1,98 +1,98 @@
 // src/modules/game/game-session-player.model.js
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import GameSession from "./game-session.model.js";
-import Users from "../users/user.model.js";
+// imports removed
 
-const GameSessionPlayer = db.define("game_session_player", {
-  id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
-  },
-  session_id: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: GameSession,
-      key: "id",
+const GameSessionPlayer = db.define(
+  "game_session_player",
+  {
+    id: {
+      type: DataTypes.BIGINT,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+
+    session_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: {
+        model: "game_sessions",
+        key: "id",
+      },
+    },
+
+    user_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: {
+        model: "users",
+        key: "id",
+      },
+    },
+
+    socket_id: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
+    is_host: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+
+    current_question_index: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+
+    status: {
+      type: DataTypes.ENUM(
+        "JOINED",
+        "READY",
+        "PLAYING",
+        "DISCONNECTED",
+        "FINISHED"
+      ),
+      allowNull: false,
+      defaultValue: "JOINED",
+    },
+
+    score: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+
+    joined_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
+
+    left_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+
+    finished_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
-  user_id: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: Users,
-      key: "id",
-    },
-  },
-  socket_id: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  is_host: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  current_question_index: {
-  type: DataTypes.INTEGER,
-  allowNull: false,
-  defaultValue: 0,
-},
-  status: {
-    type: DataTypes.ENUM(
-      "JOINED",
-      "READY",
-      "PLAYING",
-      "DISCONNECTED",
-      "FINISHED"
-    ),
-    defaultValue: "JOINED",
-  },
-  score: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0,
-  },
-  joined_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-  left_at: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  finished_at: {
-  type: DataTypes.DATE,
-  allowNull: true,
-},
-
-}, {
-  tableName: "game_session_player",
-  underscored: true,
-  indexes: [
-    { fields: ["session_id"] },
-    { fields: ["user_id"] },
-    { fields: ["status"] }
-  ]
-});
+  {
+    tableName: "game_session_players",
+    underscored: true,
+    indexes: [
+      { fields: ["session_id"] },
+      { fields: ["user_id"] },
+      { fields: ["status"] },
+      {
+        unique: true,
+        fields: ["session_id", "user_id"], // 🔒 prevent duplicate joins
+      },
+    ],
+  }
+);
 
 // Associations
-GameSession.hasMany(GameSessionPlayer, {
-  foreignKey: "session_id",
-  as: "players",
-});
-GameSessionPlayer.belongsTo(GameSession, {
-  foreignKey: "session_id",
-  as: "session",
-});
-
-Users.hasMany(GameSessionPlayer, {
-  foreignKey: "user_id",
-  as: "sessionPlayers",
-});
-GameSessionPlayer.belongsTo(Users, {
-  foreignKey: "user_id",
-  as: "user",
-});
-
 export default GameSessionPlayer;

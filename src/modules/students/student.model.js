@@ -1,91 +1,112 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import User from "../users/user.model.js";
-import School from "../schools/school.model.js";
-import Class from "../classes/classes.model.js";
-import Attendance from "../attendance/attenadance.model.js";
-import ReportCard from "../report-cards/report-card.model.js";
-import Parent from "../parents/parent.model.js";
+// imports removed to prevent circular dependency
 
 const Student = db.define(
   "student",
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.BIGINT,
+      autoIncrement: true,
       primaryKey: true,
     },
+
     user_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
+      unique: true,
       references: {
-        model: User,
+        model: "users",
         key: "id",
       },
     },
+
     school_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: School,
+        model: "schools",
         key: "id",
       },
     },
+
     class_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.BIGINT,
       allowNull: false,
       references: {
-        model: Class,
+        model: "classes",
         key: "id",
       },
     },
+
     admission_no: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+
     profile_pic: {
       type: DataTypes.TEXT,
+      allowNull: true,
     },
+
     dob: {
       type: DataTypes.DATEONLY,
+      allowNull: true,
     },
+
     gender: {
       type: DataTypes.ENUM("male", "female", "other"),
-      allowNull: false,
+      allowNull: true,
     },
+
     father_name: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
+
     mother_name: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
+
     guardian_name: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
+
     address: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+
     blood_group: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
+
     aadhar_no: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
+
     father_occupation: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
+
     mother_occupation: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
+
     family_income: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
   },
   {
-    tableName: "student",
+    tableName: "students",
     underscored: true,
     indexes: [
       { fields: ["school_id"] },
@@ -96,13 +117,4 @@ const Student = db.define(
   }
 );
 
-Student.belongsTo(User, { foreignKey: "user_id", as: "user" });
-Student.belongsTo(School, { foreignKey: "school_id", as: "school" });
-Student.belongsTo(Class, { foreignKey: "class_id", as: "class" });
-
 export default Student;
-
-// hasMany associations
-Student.hasMany(Attendance, { foreignKey: "student_id", as: "attendances" });
-Student.hasMany(ReportCard, { foreignKey: "student_id", as: "reportCards" });
-Student.hasMany(Parent, { foreignKey: "student_id", as: "parents" });

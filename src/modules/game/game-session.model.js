@@ -1,20 +1,19 @@
 // src/modules/game/game-session.model.js
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-import Quiz from "../quiz/quiz.model.js";
-import Users from "../users/user.model.js";
+// imports removed
 
 const GameSession = db.define("game_session", {
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.BIGINT,
+    autoIncrement: true,
     primaryKey: true,
   },
   quiz_id: {
-    type: DataTypes.UUID,
+    type: DataTypes.BIGINT,
     allowNull: false,
     references: {
-      model: Quiz,
+      model: "quizzes",
       key: "id",
     },
   },
@@ -28,10 +27,10 @@ const GameSession = db.define("game_session", {
     allowNull: true,
   },
   host_user_id: {
-    type: DataTypes.UUID,
+    type: DataTypes.BIGINT,
     allowNull: false,
     references: {
-      model: Users,
+      model: "users",
       key: "id",
     },
   },
@@ -40,9 +39,9 @@ const GameSession = db.define("game_session", {
     allowNull: true,
   },
   total_time_ms: {
-  type: DataTypes.INTEGER,
-  allowNull: false,
-},
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   status: {
     type: DataTypes.ENUM("LOBBY", "IN_PROGRESS", "FINISHED", "CANCELLED"),
     allowNull: false,
@@ -57,7 +56,7 @@ const GameSession = db.define("game_session", {
     allowNull: true,
   },
 }, {
-  tableName: "game_session",
+  tableName: "game_sessions",
   underscored: true,
   indexes: [
     { fields: ["quiz_id"] },
@@ -68,16 +67,4 @@ const GameSession = db.define("game_session", {
 });
 
 // Associations
-Quiz.hasMany(GameSession, { foreignKey: "quiz_id", as: "sessions" });
-GameSession.belongsTo(Quiz, { foreignKey: "quiz_id", as: "quiz" });
-
-Users.hasMany(GameSession, {
-  foreignKey: "host_user_id",
-  as: "hostedSessions",
-});
-GameSession.belongsTo(Users, {
-  foreignKey: "host_user_id",
-  as: "host",
-});
-
 export default GameSession;
