@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-// imports removed to prevent circular dependency
 
 const Student = db.define(
   "student",
@@ -44,65 +43,60 @@ const Student = db.define(
       allowNull: false,
     },
 
-    profile_pic: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
+    profile_pic: DataTypes.TEXT,
 
-    dob: {
-      type: DataTypes.DATEONLY,
-      allowNull: true,
-    },
+    dob: DataTypes.DATEONLY,
 
     gender: {
       type: DataTypes.ENUM("male", "female", "other"),
-      allowNull: true,
     },
 
-    father_name: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-
-    mother_name: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-
-    guardian_name: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
+    father_name: DataTypes.STRING,
+    mother_name: DataTypes.STRING,
+    guardian_name: DataTypes.STRING,
 
     address: {
       type: DataTypes.TEXT,
-      allowNull: false,
-    },
-
-    blood_group: {
-      type: DataTypes.STRING,
       allowNull: true,
     },
+
+    blood_group: DataTypes.STRING,
 
     aadhar_no: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       unique: true,
     },
 
-    father_occupation: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-
-    mother_occupation: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
+    father_occupation: DataTypes.STRING,
+    mother_occupation: DataTypes.STRING,
 
     family_income: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
+    },
+
+    approval_status: {
+      type: DataTypes.ENUM("pending", "approved", "rejected"),
+      allowNull: false,
+      defaultValue: "pending",
+    },
+
+    approved_by: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+      references: {
+        model: "users",
+        key: "id",
+      },
+    },
+  rejection_reason: {
+  type: DataTypes.TEXT,
+  allowNull: true,
+},
+    approved_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {

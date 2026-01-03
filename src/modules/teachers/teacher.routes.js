@@ -5,29 +5,27 @@ import { forceFirstLogin } from "../../shared/middlewares/forceFirstLogin.js";
 import { validate } from "../../shared/middlewares/validate.js";
 
 import {
-  autoCreateStudents,
-  listStudents,
-  moveStudent,
-  updateStudentStatus,
-  completeStudentProfile,
+  createTeacher,
+  listTeachers,
+  updateTeacherStatus,
+  completeTeacherProfile,
   getMyProfile,
-} from "./student.controller.js";
+} from "./teacher.controller.js";
 
 import {
-  autoCreateStudentsSchema,
-  completeStudentProfileSchema,
-  moveStudentSchema,
-  updateStudentStatusSchema,
-} from "./student.schema.js";
+  createTeacherSchema,
+  updateTeacherStatusSchema,
+  completeTeacherProfileSchema,
+} from "./teacher.schema.js";
 
 const router = express.Router();
 
-/* student self */
+/* teacher self */
 router.post(
   "/complete-profile",
   protect,
-  validate(completeStudentProfileSchema),
-  completeStudentProfile
+  validate(completeTeacherProfileSchema),
+  completeTeacherProfile
 );
 
 router.get("/me", protect, forceFirstLogin, getMyProfile);
@@ -36,23 +34,17 @@ router.get("/me", protect, forceFirstLogin, getMyProfile);
 router.use(protect, allowRoles("school_admin"));
 
 router.post(
-  "/auto-create",
-  validate(autoCreateStudentsSchema),
-  autoCreateStudents
+  "/",
+  validate(createTeacherSchema),
+  createTeacher
 );
 
-router.get("/", listStudents);
-
-router.patch(
-  "/:id/move",
-  validate(moveStudentSchema),
-  moveStudent
-);
+router.get("/", listTeachers);
 
 router.patch(
   "/:id/status",
-  validate(updateStudentStatusSchema),
-  updateStudentStatus
+  validate(updateTeacherStatusSchema),
+  updateTeacherStatus
 );
 
 export default router;

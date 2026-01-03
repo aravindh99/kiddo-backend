@@ -3,7 +3,7 @@ import User from "../../modules/users/user.model.js";
 import School from "../../modules/schools/school.model.js";
 import AppError from "../appError.js";
 
-export default async function auth(req, res, next) {
+export  async function protect(req, res, next) {
   try {
     // 1️⃣ Extract token
     const header = req.headers.authorization;
@@ -40,6 +40,7 @@ export default async function auth(req, res, next) {
       id: user.id,
       role: user.role,
       school_id: user.school_id,
+      first_login: user.first_login,
     };
 
     next();

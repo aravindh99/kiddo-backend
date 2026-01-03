@@ -5,22 +5,24 @@ import User from "../users/user.model.js";
 import School from "../schools/school.model.js";
 
 export const login = asyncHandler(async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body; // already validated by Zod
 
   const user = await User.findOne({ where: { username } });
   if (!user) {
     throw new AppError("Username not found", 401);
   }
-   if (user.status !== "active") { throw new AppError("User account disabled", 403); }
+
+  if (!user.is_active) {
+    throw new AppError("User account disabled", 403);
+  }
 
   if (password !== user.password) {
     throw new AppError("Password is wrong", 401);
   }
 
-  // 🔒 school status check (only for non-super-admin)
+  // school check (except super admin)
   if (user.role !== "super_admin") {
     const school = await School.findByPk(user.school_id);
-
     if (!school || school.status !== "active") {
       throw new AppError("School is inactive", 403);
     }

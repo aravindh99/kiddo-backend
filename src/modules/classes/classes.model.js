@@ -19,13 +19,12 @@ const Class = db.define(
         key: "id",
       },
     },
+    section_id: {
+  type: DataTypes.BIGINT,
+  allowNull: false,
+},
 
     class_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-
-    section_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -51,7 +50,7 @@ const Class = db.define(
     indexes: [
       {
         unique: true,
-        fields: ["school_id", "class_name", "section_name"],
+        fields: ["school_id", "class_name"],
       },
     ],
   }

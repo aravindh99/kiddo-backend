@@ -34,8 +34,41 @@ app.use(morgan("dev"));
 app.get("/", (req, res) =>  res.json({message: `server is running ;)`}));
 
 
-// routes
+// auth
+import authRoutes from "./src/modules/auth/auth.routes.js";
 
+// core entities
+import schoolRoutes from "./src/modules/schools/school.routes.js";
+import studentRoutes from "./src/modules/students/student.routes.js";
+import teacherRoutes from "./src/modules/teachers/teacher.routes.js";
+import parentRoutes from "./src/modules/parents/parent.routes.js";
+
+// approvals & dashboards
+import approvalRoutes from "./src/modules/approvals/approval.routes.js";
+import parentDashboardRoutes from "./src/modules/parents/parent.dashboard.routes.js";
+import auditRoutes from "./src/modules/audit/audit.routes.js";
+
+// bulk approvals
+import parentBulkRoutes from "./src/modules/parents/parent.bulk.routes.js";
+import teacherBulkRoutes from "./src/modules/teachers/teacher.bulk.routes.js";
+
+/* =========================
+   ROUTE REGISTRATION
+========================= */
+
+app.use("/api/auth", authRoutes);
+
+app.use("/api/schools", schoolRoutes);
+app.use("/api/students", studentRoutes);
+app.use("/api/teachers", teacherRoutes);
+app.use("/api/parents", parentRoutes);
+
+app.use("/api", approvalRoutes);
+app.use("/api", parentDashboardRoutes);
+app.use("/api", auditRoutes);
+
+app.use("/api", parentBulkRoutes);
+app.use("/api", teacherBulkRoutes);
 
 //404 route path
   app.use((req, res) => {

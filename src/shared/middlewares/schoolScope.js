@@ -1,4 +1,4 @@
-export default function schoolScope(req, res, next) {
+export const schoolScope = (req, res, next) => {
   if (req.user.role === "super_admin") {
     return next();
   }

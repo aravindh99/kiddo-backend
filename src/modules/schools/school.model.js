@@ -58,11 +58,10 @@ const School = db.define(
       allowNull: true,
     },
 
-    status: {
-      type: DataTypes.ENUM("active", "inactive"),
-      allowNull: false,
-      defaultValue: "active",
-    },
+   status: {
+  type: DataTypes.ENUM("pending", "active", "suspended", "expired"),
+  defaultValue: "pending",
+},
   },
   {
     tableName: "schools",

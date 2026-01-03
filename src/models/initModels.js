@@ -16,6 +16,7 @@ import Subject from "../modules/subjects/subject.model.js";
 import Timetable from "../modules/timetables/timetable.model.js";
 import Chapter from "../modules/chapters/chapter.model.js";
 import Topic from "../modules/topics/topic.model.js";
+import Section from "../modules/sections/section.model.js";
 
 /* ===================== ACTIVITY ===================== */
 import Attendance from "../modules/attendance/attendance.model.js";
@@ -54,6 +55,8 @@ const initAssociations = () => {
   School.hasMany(Class, { foreignKey: "school_id" });
   School.hasMany(Teacher, { foreignKey: "school_id" });
   School.hasMany(Student, { foreignKey: "school_id" });
+  School.hasMany(Section, { foreignKey: "school_id" });
+  Section.belongsTo(School, { foreignKey: "school_id" });
 
   User.belongsTo(School, { foreignKey: "school_id" });
 
@@ -100,6 +103,10 @@ const initAssociations = () => {
   Class.hasMany(Student, { foreignKey: "class_id" });
   Class.hasMany(Attendance, { foreignKey: "class_id" });
   Class.hasMany(Assignment, { foreignKey: "class_id" });
+  Class.hasMany(Section, { foreignKey: "class_id" });
+  Section.belongsTo(Class, { foreignKey: "class_id" });
+  Section.hasMany(Student, { foreignKey: "section_id" });
+Student.belongsTo(Section, { foreignKey: "section_id" });
 
   /* ==================== SUBJECT ==================== */
   Subject.belongsTo(School, { foreignKey: "school_id" });
