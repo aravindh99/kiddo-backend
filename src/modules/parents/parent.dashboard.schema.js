@@ -1,8 +1,10 @@
 import { z } from "zod";
 
-export const parentDashboardSchema = z.object({
-  query: z.object({
-    limit: z.string().optional(),
-    offset: z.string().optional(),
-  }),
+/* parent children list */
+export const parentChildrenQuerySchema = z.object({
+  page: z.string().optional(),
+  limit: z.string().optional(),
 });
+
+/* daily dashboard (no params needed) */
+export const parentDashboardSchema = z.object({});

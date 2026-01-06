@@ -1,69 +1,50 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-// imports removed
 
 const ReportCard = db.define(
   "report_card",
   {
     id: {
       type: DataTypes.BIGINT,
-      autoIncrement: true,
       primaryKey: true,
+      autoIncrement: true,
     },
 
     student_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      references: {
-        model: "students",
-        key: "id",
-      },
     },
 
     class_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      references: {
-        model: "classes",
-        key: "id",
-      },
     },
 
-    term: {
-      type: DataTypes.ENUM("TERM_1", "TERM_2", "TERM_3", "FINAL"),
-      allowNull: false,
-    },
-
-    year: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-
-    grades: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-    },
-
-    gpa: {
-      type: DataTypes.DECIMAL(4, 2),
+    exam_id: {
+      type: DataTypes.BIGINT,
       allowNull: false,
     },
 
     remarks: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+
+    published_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
     tableName: "report_cards",
     underscored: true,
+    timestamps: true,
     indexes: [
       { fields: ["student_id"] },
-      { fields: ["class_id"] },
-      { fields: ["year", "term"] },
+      { fields: ["exam_id"] },
       {
         unique: true,
-        fields: ["student_id", "class_id", "year", "term"],
+        fields: ["student_id", "exam_id"],
       },
     ],
   }

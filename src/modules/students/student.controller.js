@@ -80,3 +80,26 @@ export const getMyProfile = asyncHandler(async (req, res) => {
 
   res.json(student);
 });
+
+
+//assign students to section
+
+export const assignStudentsToSection = asyncHandler(async (req, res) => {
+  const result = await assignStudentsToSectionService({
+    school_id: req.user.school_id,
+    ...req.body,
+  });
+
+  if (result?.error === "CLASS_NOT_FOUND") {
+    throw new AppError("Target class not found", 404);
+  }
+
+  if (result?.error === "SECTION_NOT_FOUND") {
+    throw new AppError("Target section not found or inactive", 404);
+  }
+
+  res.json({
+    success: true,
+    message: "Students assigned successfully",
+  });
+});

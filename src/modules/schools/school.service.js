@@ -1,6 +1,7 @@
 import School from "./school.model.js";
 import User from "../users/user.model.js";
 import AppError from "../../shared/appError.js";
+import { getPagination } from "../../shared/utils/pagination.js";
 
 /* =========================
    SUPER ADMIN: CREATE SCHOOL
@@ -27,6 +28,14 @@ export const createSchoolService = async ({
     status: "pending",
   });
 
+  const existingUser = await User.findOne({
+  where: { username: admin_username },
+});
+
+if (existingUser) {
+  throw new AppError("Admin username already exists", 409);
+}
+
   const admin = await User.create({
     role: "school_admin",
     school_id: school.id,
@@ -46,8 +55,9 @@ export const createSchoolService = async ({
 /* =========================
    SUPER ADMIN: LIST SCHOOLS
 ========================= */
-export const listSchoolsService = async () => {
-  return School.findAll();
+export const listSchoolsService = async ({ query }) => {
+  const { limit, offset } = getPagination(query);
+  return School.findAndCountAll({ limit, offset });
 };
 
 /* =========================

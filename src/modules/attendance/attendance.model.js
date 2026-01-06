@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-// imports removed
 
 const Attendance = db.define(
   "attendance",
@@ -9,6 +8,15 @@ const Attendance = db.define(
       type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true,
+    },
+
+    school_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: {
+        model: "schools",
+        key: "id",
+      },
     },
 
     student_id: {
@@ -29,6 +37,15 @@ const Attendance = db.define(
       },
     },
 
+    section_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: {
+        model: "sections",
+        key: "id",
+      },
+    },
+
     date: {
       type: DataTypes.DATEONLY,
       allowNull: false,
@@ -41,9 +58,9 @@ const Attendance = db.define(
 
     marked_by: {
       type: DataTypes.BIGINT,
-      allowNull: true,
+      allowNull: false,
       references: {
-        model: "teachers",
+        model: "users",
         key: "id",
       },
     },
@@ -54,11 +71,13 @@ const Attendance = db.define(
     indexes: [
       {
         unique: true,
-        fields: ["student_id", "class_id", "date"],
+        fields: ["student_id", "date"],
       },
+      { fields: ["school_id"] },
       { fields: ["class_id"] },
-      { fields: ["marked_by"] },
+      { fields: ["section_id"] },
       { fields: ["date"] },
+      { fields: ["marked_by"] },
     ],
   }
 );

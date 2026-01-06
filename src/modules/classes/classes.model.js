@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-// imports removed
 
 const Class = db.define(
   "class",
@@ -19,10 +18,6 @@ const Class = db.define(
         key: "id",
       },
     },
-    section_id: {
-  type: DataTypes.BIGINT,
-  allowNull: false,
-},
 
     class_name: {
       type: DataTypes.STRING,
@@ -47,6 +42,7 @@ const Class = db.define(
   {
     tableName: "classes",
     underscored: true,
+    timestamps: true,
     indexes: [
       {
         unique: true,

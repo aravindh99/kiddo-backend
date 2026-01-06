@@ -10,9 +10,22 @@ const Section = db.define(
       primaryKey: true,
     },
 
+    school_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      references: {
+        model: "schools",
+        key: "id",
+      },
+    },
+
     class_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      references: {
+        model: "classes",
+        key: "id",
+      },
     },
 
     name: {
@@ -37,8 +50,10 @@ const Section = db.define(
     indexes: [
       {
         unique: true,
-        fields: ["class_id", "name"],
+        fields: ["school_id", "class_id", "name"],
       },
+      { fields: ["school_id"] },
+      { fields: ["class_id"] },
     ],
   }
 );

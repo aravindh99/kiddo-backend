@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-// imports removed
 
 const Notification = db.define(
   "notification",
@@ -11,74 +10,62 @@ const Notification = db.define(
       primaryKey: true,
     },
 
-    user_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: {
-        model: "users",
-        key: "id",
-      },
-    },
-
-    type: {
-      type: DataTypes.ENUM(
-        "assignment",
-        "attendance",
-        "announcement",
-        "quiz",
-        "game",
-        "system"
-      ),
-      allowNull: false,
-    },
-
-    payload: {
-      type: DataTypes.JSONB,
-      allowNull: false,
-    },
-
-    priority: {
-      type: DataTypes.ENUM("low", "high"),
-      allowNull: false,
-      defaultValue: "low",
-    },
-
     school_id: {
       type: DataTypes.BIGINT,
-      allowNull: true,
-      references: {
-        model: "schools",
-        key: "id",
-      },
+      allowNull: false,
+    },
+
+    sender_user_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+    },
+
+    sender_role: {
+      type: DataTypes.ENUM("admin", "teacher"),
+      allowNull: false,
+    },
+
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
+    message: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+
+    /* TARGETING */
+    target_role: {
+      type: DataTypes.ENUM("teacher", "parent", "student", "all"),
+      allowNull: false,
     },
 
     class_id: {
       type: DataTypes.BIGINT,
-      allowNull: true,
-      references: {
-        model: "classes",
-        key: "id",
-      },
+      allowNull: true, // teacher → own class, admin optional
     },
 
-    is_read: {
+    section_id: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
+
+    is_active: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
+      defaultValue: true,
     },
   },
   {
     tableName: "notifications",
     underscored: true,
+    timestamps: true,
     indexes: [
-      { fields: ["user_id"] },
-      { fields: ["user_id", "is_read"] },
-      { fields: ["class_id"] },
       { fields: ["school_id"] },
-      { fields: ["created_at"] },
+      { fields: ["target_role"] },
+      { fields: ["class_id"] },
     ],
   }
 );
 
-// Associations
 export default Notification;

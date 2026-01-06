@@ -27,3 +27,17 @@ export const updateStudentStatusSchema = z.object({
   is_active: z.boolean(),
 });
 
+
+/* admin: bulk assign students to section */
+export const assignStudentsToSectionSchema = z.object({
+  target_class_id: z.number().int().positive(),
+  target_section_id: z.number().int().positive(),
+  students: z
+    .array(
+      z.object({
+        student_id: z.number().int().positive(),
+        roll_no: z.number().int().positive(),
+      })
+    )
+    .min(1),
+});

@@ -23,6 +23,8 @@ const router = express.Router();
 router.use(protect, allowRoles("super_admin"));
 
 router.post("/", validate(createSchoolSchema), createSchool);
+
+
 router.get("/", listSchools);
 router.patch("/:id/status", validate(updateSchoolStatusSchema), updateSchoolStatus);
 router.patch(

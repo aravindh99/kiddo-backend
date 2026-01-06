@@ -9,7 +9,6 @@ const Student = db.define(
       autoIncrement: true,
       primaryKey: true,
     },
-
     user_id: {
       type: DataTypes.BIGINT,
       allowNull: false,

@@ -1,68 +1,76 @@
 import { DataTypes } from "sequelize";
 import db from "../../config/db.js";
-// imports removed
 
 const Timetable = db.define(
-  "timetable_slot",
+  "timetable",
   {
     id: {
       type: DataTypes.BIGINT,
-      primaryKey: true,
       autoIncrement: true,
+      primaryKey: true,
+    },
+
+    school_id: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
     },
 
     class_id: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      references: { model: "classes", key: "id" },
     },
 
-    day_of_week: {
-      type: DataTypes.ENUM("Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+    section_id: {
+      type: DataTypes.BIGINT,
       allowNull: false,
     },
 
-    period_no: {
-      type: DataTypes.INTEGER,
+    day_of_week: {
+      type: DataTypes.ENUM(
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday"
+      ),
+      allowNull: false,
+    },
+
+    start_time: {
+      type: DataTypes.TIME,
+      allowNull: false,
+    },
+
+    end_time: {
+      type: DataTypes.TIME,
       allowNull: false,
     },
 
     subject_id: {
       type: DataTypes.BIGINT,
+      allowNull: true, // NULL = break
+    },
+
+    title: {
+      type: DataTypes.STRING,
+      allowNull: true, // "Lunch Break", "Short Break"
+    },
+
+    is_break: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
-      references: { model: "subjects", key: "id" },
-    },
-
-    teacher_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      references: { model: "teachers", key: "id" },
-    },
-
-    start_time: {
-      type: DataTypes.TIME,
-      allowNull: true,
-    },
-
-    end_time: {
-      type: DataTypes.TIME,
-      allowNull: true,
+      defaultValue: false,
     },
   },
   {
-    tableName: "timetable_slots",
+    tableName: "timetables",
     underscored: true,
+    timestamps: true,
     indexes: [
-      {
-        unique: true,
-        fields: ["class_id", "day_of_week", "period_no"],
-      },
-      {
-        unique: true,
-        fields: ["teacher_id", "day_of_week", "period_no"],
-      },
-      { fields: ["teacher_id"] },
-      { fields: ["subject_id"] },
+      { fields: ["school_id"] },
+      { fields: ["class_id", "section_id"] },
+      { fields: ["day_of_week"] },
     ],
   }
 );

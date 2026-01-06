@@ -4,6 +4,7 @@ import Class from "../classes/classes.model.js";
 import Section from "../sections/section.model.js";
 import AppError from "../../shared/appError.js";
 import { getPagination } from "../../shared/utils/pagination.js";
+import { assertSectionCapacity } from "./student.capacity.js";
 
 /* =========================
    ADMIN: AUTO CREATE
@@ -44,7 +45,8 @@ export const autoCreateStudentsService = async ({
         is_active: true,
         name: "Student",
       });
-
+  
+      await assertSectionCapacity({ section_id });
       const student = await Student.create({
         user_id: user.id,
         school_id,
@@ -116,4 +118,61 @@ export const updateStudentStatusService = async ({
   student.is_active = is_active;
   await student.save();
   return student;
+};
+
+
+//Bulk student update to sections
+
+export const assignStudentsToSectionService = async ({
+  school_id,
+  target_class_id,
+  target_section_id,
+  students,
+}) => {
+  return db.transaction(async (t) => {
+    // 1. Validate class
+    const cls = await Class.findOne({
+      where: { id: target_class_id, school_id },
+      transaction: t,
+    });
+
+    if (!cls) {
+      return { error: "CLASS_NOT_FOUND" };
+    }
+
+    // 2. Validate section
+    const section = await Section.findOne({
+      where: {
+        id: target_section_id,
+        class_id: target_class_id,
+        school_id,
+        is_active: true,
+      },
+      transaction: t,
+    });
+
+    if (!section) {
+      return { error: "SECTION_NOT_FOUND" };
+    }
+
+    // 3. Update students
+    for (const s of students) {
+      await Student.update(
+        {
+          class_id: target_class_id,
+          section_id: target_section_id,
+          roll_no: s.roll_no,
+        },
+        {
+          where: {
+            id: s.student_id,
+            school_id,
+          },
+          transaction: t,
+        }
+      );
+    }
+
+    return { success: true };
+  });
 };

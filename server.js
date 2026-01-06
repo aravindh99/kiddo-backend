@@ -31,7 +31,7 @@ app.use(morgan("dev"));
 
 
 //health check 
-app.get("/", (req, res) =>  res.json({message: `server is running ;)`}));
+app.get("/", (req, res) => {res.json({ message: `server is running ;)` })});
 
 
 // auth
@@ -42,9 +42,13 @@ import schoolRoutes from "./src/modules/schools/school.routes.js";
 import studentRoutes from "./src/modules/students/student.routes.js";
 import teacherRoutes from "./src/modules/teachers/teacher.routes.js";
 import parentRoutes from "./src/modules/parents/parent.routes.js";
+import sectionRoutes from "./src/modules/sections/section.routes.js";
 
 // approvals & dashboards
 import approvalRoutes from "./src/modules/approvals/approval.routes.js";
+import teacherApprovalRoutes from "./src/modules/teachers/teacher.approval.routes.js";
+import studentApprovalRoutes from "./src/modules/students/student.approval.routes.js";
+import parentApprovalRoutes from "./src/modules/parents/parent.approval.routes.js";
 import parentDashboardRoutes from "./src/modules/parents/parent.dashboard.routes.js";
 import auditRoutes from "./src/modules/audit/audit.routes.js";
 
@@ -52,9 +56,9 @@ import auditRoutes from "./src/modules/audit/audit.routes.js";
 import parentBulkRoutes from "./src/modules/parents/parent.bulk.routes.js";
 import teacherBulkRoutes from "./src/modules/teachers/teacher.bulk.routes.js";
 
-/* =========================
-   ROUTE REGISTRATION
-========================= */
+// attendance
+import attendanceSummaryRoutes from "./src/modules/attendance/attendance.summary.routes.js";
+import attendanceAnalyticsRoutes from "./src/modules/attendance/attendance.analytics.routes.js";
 
 app.use("/api/auth", authRoutes);
 
@@ -62,29 +66,36 @@ app.use("/api/schools", schoolRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/parents", parentRoutes);
+app.use("/api", sectionRoutes);
 
 app.use("/api", approvalRoutes);
+app.use("/api", teacherApprovalRoutes);
+app.use("/api", studentApprovalRoutes);
+app.use("/api", parentApprovalRoutes);
 app.use("/api", parentDashboardRoutes);
 app.use("/api", auditRoutes);
 
 app.use("/api", parentBulkRoutes);
 app.use("/api", teacherBulkRoutes);
 
+app.use("/api", attendanceSummaryRoutes);
+app.use("/api", attendanceAnalyticsRoutes);
+
 //404 route path
-  app.use((req, res) => {
-    res.status(404).json({ message: "Route not found" });
-  });
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
 
 
 //error handling middleware
- app.use(errorHandler);
+app.use(errorHandler);
 
 //server start
 try {
   await db.authenticate();
   console.log("DB connected");
 
-  await db.sync({force: true}); // sync
+  await db.sync({ force: true }); // sync
 
   app.listen(PORT, "0.0.0.0", () =>
     console.log(`http://localhost:${PORT}`)

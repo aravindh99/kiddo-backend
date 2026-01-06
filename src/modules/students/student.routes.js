@@ -4,6 +4,7 @@ import { allowRoles } from "../../shared/middlewares/role.js";
 import { forceFirstLogin } from "../../shared/middlewares/forceFirstLogin.js";
 import { validate } from "../../shared/middlewares/validate.js";
 
+
 import {
   autoCreateStudents,
   listStudents,
@@ -11,6 +12,7 @@ import {
   updateStudentStatus,
   completeStudentProfile,
   getMyProfile,
+  assignStudentsToSection,
 } from "./student.controller.js";
 
 import {
@@ -18,6 +20,7 @@ import {
   completeStudentProfileSchema,
   moveStudentSchema,
   updateStudentStatusSchema,
+  assignStudentsToSectionSchema,
 } from "./student.schema.js";
 
 const router = express.Router();
@@ -53,6 +56,12 @@ router.patch(
   "/:id/status",
   validate(updateStudentStatusSchema),
   updateStudentStatus
+);
+
+router.post(
+  "/assign-section",
+  validate(assignStudentsToSectionSchema),
+  assignStudentsToSection
 );
 
 export default router;

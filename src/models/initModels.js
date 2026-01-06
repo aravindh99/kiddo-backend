@@ -10,6 +10,7 @@ import Teacher from "../modules/teachers/teacher.model.js";
 import Parent from "../modules/parents/parent.model.js";
 import Student from "../modules/students/student.model.js";
 
+
 /* ===================== ACADEMICS ===================== */
 import Class from "../modules/classes/classes.model.js";
 import Subject from "../modules/subjects/subject.model.js";
@@ -18,10 +19,13 @@ import Chapter from "../modules/chapters/chapter.model.js";
 import Topic from "../modules/topics/topic.model.js";
 import Section from "../modules/sections/section.model.js";
 
+//homework
+import Homework from "../modules/homework/homework.model.js";
+import HomeworkSubmission from "../modules/homework/homework-submission.model.js";
+
+
 /* ===================== ACTIVITY ===================== */
 import Attendance from "../modules/attendance/attendance.model.js";
-import Assignment from "../modules/assignments/assignment.model.js";
-import ReportCard from "../modules/report-cards/report-card.model.js";
 import TopicProgress from "../modules/topic-progress/topic-progress.model.js";
 
 /* ===================== CONTENT ===================== */
@@ -46,8 +50,15 @@ import Subscription from "../modules/subscriptions/subscription.model.js";
 import TokenAccount from "../modules/tokens/token-account.model.js";
 import TokenTransaction from "../modules/tokens/token-transaction.model.js";
 
+/* ===================== REPORT CARDS ===================== */
+import Exam from "../modules/report-cards/exam.model.js";
+import ReportCard from "../modules/report-cards/report-card.model.js";
+import ReportCardMark from "../modules/report-cards/report-card-mark.model.js";
+
 /* ===================== MISC ===================== */
 import Notification from "../modules/notifications/notifications.model.js";
+import NotificationAck from "../modules/notifications/notification-ack.model.js";
+
 
 const initAssociations = () => {
   /* ==================== SCHOOL ==================== */
@@ -56,9 +67,9 @@ const initAssociations = () => {
   School.hasMany(Teacher, { foreignKey: "school_id" });
   School.hasMany(Student, { foreignKey: "school_id" });
   School.hasMany(Section, { foreignKey: "school_id" });
-  Section.belongsTo(School, { foreignKey: "school_id" });
 
   User.belongsTo(School, { foreignKey: "school_id" });
+  Section.belongsTo(School, { foreignKey: "school_id" });
 
   /* ==================== USER PROFILES ==================== */
   User.hasOne(Student, { foreignKey: "user_id" });
@@ -70,16 +81,45 @@ const initAssociations = () => {
   User.hasOne(Parent, { foreignKey: "user_id" });
   Parent.belongsTo(User, { foreignKey: "user_id" });
 
-  /* ==================== STUDENT ==================== */
+  /* ==================== STUDENT (LEGACY – KEEP) ==================== */
   Student.belongsTo(School, { foreignKey: "school_id" });
-  Student.belongsTo(Class, { foreignKey: "class_id" });
+  Student.belongsTo(Class, {
+  foreignKey: "class_id",
+  onDelete: "SET NULL",
+});
+  Student.belongsTo(Section, { foreignKey: "section_id" });
+
+  Class.hasMany(Student, { foreignKey: "class_id" });
+  Section.hasMany(Student, { foreignKey: "section_id" });
 
   Student.hasMany(Attendance, { foreignKey: "student_id" });
-  Student.hasMany(ReportCard, { foreignKey: "student_id" });
   Student.hasMany(StudentContent, { foreignKey: "student_id" });
   Student.hasMany(TopicProgress, { foreignKey: "student_id" });
 
-  /* ==================== STUDENT ↔ PARENT (FIXED) ==================== */
+    /* ==================== REPORT CARDS ==================== */
+
+  Exam.belongsTo(School, { foreignKey: "school_id" });
+  Exam.belongsTo(Class, { foreignKey: "class_id" });
+
+  ReportCard.belongsTo(Student, { foreignKey: "student_id" });
+  ReportCard.belongsTo(Class, { foreignKey: "class_id" });
+  ReportCard.belongsTo(Exam, { foreignKey: "exam_id" });
+
+  ReportCard.hasMany(ReportCardMark, {
+    foreignKey: "report_card_id",
+    onDelete: "CASCADE",
+  });
+
+  ReportCardMark.belongsTo(ReportCard, {
+    foreignKey: "report_card_id",
+  });
+
+  ReportCardMark.belongsTo(Subject, {
+    foreignKey: "subject_id",
+  });
+
+
+  /* ==================== STUDENT ↔ PARENT ==================== */
   Student.belongsToMany(Parent, {
     through: "student_parents",
     foreignKey: "student_id",
@@ -99,14 +139,8 @@ const initAssociations = () => {
   /* ==================== CLASS ==================== */
   Class.belongsTo(School, { foreignKey: "school_id" });
   Class.belongsTo(Teacher, { foreignKey: "class_teacher_id" });
-
-  Class.hasMany(Student, { foreignKey: "class_id" });
   Class.hasMany(Attendance, { foreignKey: "class_id" });
-  Class.hasMany(Assignment, { foreignKey: "class_id" });
   Class.hasMany(Section, { foreignKey: "class_id" });
-  Section.belongsTo(Class, { foreignKey: "class_id" });
-  Section.hasMany(Student, { foreignKey: "section_id" });
-Student.belongsTo(Section, { foreignKey: "section_id" });
 
   /* ==================== SUBJECT ==================== */
   Subject.belongsTo(School, { foreignKey: "school_id" });
@@ -135,9 +169,13 @@ Student.belongsTo(Section, { foreignKey: "section_id" });
 
   GameSessionPlayer.belongsTo(GameSession, { foreignKey: "session_id" });
   GameSessionPlayer.belongsTo(User, { foreignKey: "user_id" });
-  GameSessionPlayer.hasMany(PlayerAnswer, { foreignKey: "session_player_id" });
+  GameSessionPlayer.hasMany(PlayerAnswer, {
+    foreignKey: "session_player_id",
+  });
 
-  PlayerAnswer.belongsTo(GameSessionPlayer, { foreignKey: "session_player_id" });
+  PlayerAnswer.belongsTo(GameSessionPlayer, {
+    foreignKey: "session_player_id",
+  });
   PlayerAnswer.belongsTo(QuizQuestion, { foreignKey: "question_id" });
 
   /* ==================== AI / LOGS ==================== */
@@ -145,6 +183,19 @@ Student.belongsTo(Section, { foreignKey: "section_id" });
   RagQuery.belongsTo(User, { foreignKey: "user_id" });
   VoiceLog.belongsTo(User, { foreignKey: "user_id" });
   AiOutput.belongsTo(User, { foreignKey: "user_id" });
+ 
+  //homeworks
+  Homework.belongsTo(Class, { foreignKey: "class_id" });
+ Homework.belongsTo(Section, { foreignKey: "section_id" });
+ Homework.belongsTo(Subject, { foreignKey: "subject_id" });
+HomeworkSubmission.belongsTo(Homework, { foreignKey: "homework_id" });
+HomeworkSubmission.belongsTo(Student, { foreignKey: "student_id" });
+
+Homework.hasMany(HomeworkSubmission, {
+  foreignKey: "homework_id",
+  onDelete: "CASCADE",
+});
+
 
   /* ==================== TOKENS ==================== */
   Subscription.belongsTo(User, { foreignKey: "user_id" });
@@ -155,6 +206,14 @@ Student.belongsTo(Section, { foreignKey: "section_id" });
   Notification.belongsTo(User, { foreignKey: "user_id" });
   Notification.belongsTo(School, { foreignKey: "school_id" });
   Notification.belongsTo(Class, { foreignKey: "class_id" });
+  NotificationAck.belongsTo(Notification, {
+  foreignKey: "notification_id",
+  onDelete: "CASCADE",
+});
+
+Notification.hasMany(NotificationAck, {
+  foreignKey: "notification_id",
+});
 };
 
 initAssociations();
