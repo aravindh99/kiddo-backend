@@ -66,7 +66,7 @@ app.use("/api/schools", schoolRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/parents", parentRoutes);
-app.use("/api", sectionRoutes);
+app.use("/api/sections", sectionRoutes);
 
 app.use("/api", approvalRoutes);
 app.use("/api", teacherApprovalRoutes);

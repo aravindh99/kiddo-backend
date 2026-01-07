@@ -20,7 +20,7 @@ const router = express.Router();
    SCHOOL ADMIN
 ========================= */
 router.post(
-  "/sections",
+  "/",
   protect,
   allowRoles("school_admin"),
   validate(createSectionSchema),
@@ -35,7 +35,7 @@ router.get(
 );
 
 router.patch(
-  "/sections/:id/status",
+  "/:id/status",
   protect,
   allowRoles("school_admin"),
   validate(updateSectionStatusSchema),
